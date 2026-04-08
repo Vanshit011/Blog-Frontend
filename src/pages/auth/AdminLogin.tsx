@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
-import { getGoogleAdminLoginUrl } from "../../services/api";
-import { LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { getGoogleAdminLoginUrl } from '../../services/api';
+import { LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    const token = params.get('token');
     if (token) {
-      localStorage.setItem("access_token", token);
-      console.log("Admin Login successful via Google");
+      localStorage.setItem('access_token', token);
+      console.log('Admin Login successful via Google');
       window.history.replaceState({}, document.title, window.location.pathname);
-      navigate("/admin/dashboard");
+      navigate('/admin/dashboard');
     }
   }, [navigate]);
 
