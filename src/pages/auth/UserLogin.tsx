@@ -1,38 +1,44 @@
-import React, { useEffect } from "react";
-import { userLogin, getGoogleUserLoginUrl } from "../../services/api";
-import { LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { userLogin, getGoogleUserLoginUrl } from '../../services/api';
+import { LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ErrorMessage from '../../common/ErrorMessage';
+import FormInput from '../../common/FormInput';
 
 const UserLogin = () => {
+  const [apiError, setApiError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    const token = params.get('token');
     if (token) {
-      localStorage.setItem("access_token", token);
-      console.log("Login successful via Google");
+      localStorage.setItem('access_token', token);
       window.history.replaceState({}, document.title, window.location.pathname);
-      navigate("/dashboard");
+      navigate('/home');
     }
   }, [navigate]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    userLogin(email, password)
+  const onSubmit = (data: Record<string, string>) => {
+    userLogin(data.email, data.password)
       .then((response) => {
-        // console.log("Login successful:", response.data);
         if (response.data.access_token) {
-          localStorage.setItem("access_token", response.data.access_token);
-          navigate("/dashboard");
+          localStorage.setItem('access_token', response.data.access_token);
+          navigate('/home');
         }
       })
       .catch((error) => {
-        console.error("Login failed:", error);
+        setApiError(
+          error.response?.data?.message ||
+            error.message ||
+            'Login failed. Please try again.'
+        );
       });
   };
 
@@ -55,38 +61,26 @@ const UserLogin = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <ErrorMessage message={apiError || ''} />
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              />
-            </div>
+            <FormInput
+              label="Email Address"
+              id="email"
+              type="email"
+              ringClassName="focus:ring-indigo-500"
+              {...register('email', { required: 'Email is required' })}
+              error={errors.email?.message as string}
+            />
+            <FormInput
+              label="Password"
+              id="password"
+              type="password"
+              ringClassName="focus:ring-indigo-500"
+              {...register('password', { required: 'Password is required' })}
+              error={errors.password?.message as string}
+            />
           </div>
 
           <button
@@ -121,7 +115,7 @@ const UserLogin = () => {
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <a
             href="/signup"
             className="font-semibold text-indigo-600 hover:text-indigo-500"

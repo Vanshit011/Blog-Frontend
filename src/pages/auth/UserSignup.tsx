@@ -1,27 +1,35 @@
-import React from "react";
-import { userSignup, getGoogleUserLoginUrl } from "../../services/api";
-import { UserPlus } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { userSignup, getGoogleUserLoginUrl } from '../../services/api';
+import { UserPlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ErrorMessage from '../../common/ErrorMessage';
+import FormInput from '../../common/FormInput';
 
 const UserSignup = () => {
-  // const navigation = useNavigate();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const firstName = formData.get("firstName") as string;
-    const lastName = formData.get("lastName") as string;
+  const [apiError, setApiError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const navigation = useNavigate();
 
-    userSignup(email, password, firstName, lastName)
+  const onSubmit = (data: Record<string, string>) => {
+    userSignup(data.email, data.password, data.firstName, data.lastName)
       .then((response) => {
-        console.log("Signup successful:", response.data);
-        // navigation("/dashboard");
+        console.log('Signup successful:', response.data);
+        navigation('/login');
       })
       .catch((error) => {
-        console.error("Signup failed:", error);
+        setApiError(
+          error.response?.data?.message ||
+            error.message ||
+            'Signup failed. Please try again.'
+        );
       });
   };
+
   const handleGoogleLogin = () => {
     window.location.href = getGoogleUserLoginUrl();
   };
@@ -39,70 +47,48 @@ const UserSignup = () => {
           <p className="mt-2 text-sm text-gray-600">Join our community today</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <ErrorMessage message={apiError || ''} />
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-semibold text-gray-700"
-                >
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  required
-                  className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-semibold text-gray-700"
-                >
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  required
-                  className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              <FormInput
+                label="First Name"
+                id="firstName"
+                type="text"
+                ringClassName="focus:ring-emerald-500"
+                {...register('firstName', {
+                  required: 'First Name is required',
+                })}
+                error={errors.firstName?.message as string}
+              />
+              <FormInput
+                label="Last Name"
+                id="lastName"
+                type="text"
+                ringClassName="focus:ring-emerald-500"
+                {...register('lastName', {
+                  required: 'Last Name is required',
+                })}
+                error={errors.lastName?.message as string}
               />
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-semibold text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-              />
-            </div>
+            <FormInput
+              label="Email Address"
+              id="email"
+              type="email"
+              ringClassName="focus:ring-emerald-500"
+              {...register('email', { required: 'Email is required' })}
+              error={errors.email?.message as string}
+            />
+            <FormInput
+              label="Password"
+              id="password"
+              type="password"
+              ringClassName="focus:ring-emerald-500"
+              {...register('password', { required: 'Password is required' })}
+              error={errors.password?.message as string}
+            />
           </div>
 
           <button
@@ -135,7 +121,7 @@ const UserSignup = () => {
         </button>
 
         <p className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <a
             href="/login"
             className="font-semibold text-emerald-600 hover:text-emerald-500"
