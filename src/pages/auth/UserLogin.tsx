@@ -5,6 +5,7 @@ import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../common/ErrorMessage';
 import FormInput from '../../common/FormInput';
+import { decodeJWT } from '../../shared/utils';
 
 const UserLogin = () => {
   const [apiError, setApiError] = useState<string | null>(null);
@@ -20,6 +21,10 @@ const UserLogin = () => {
     const token = params.get('token');
     if (token) {
       localStorage.setItem('access_token', token);
+      const decoded = decodeJWT(token);
+      if (decoded?.role) {
+        localStorage.setItem('user_role', decoded.role);
+      }
       window.history.replaceState({}, document.title, window.location.pathname);
       navigate('/home');
     }
@@ -29,7 +34,12 @@ const UserLogin = () => {
     userLogin(data.email, data.password)
       .then((response) => {
         if (response.data.access_token) {
-          localStorage.setItem('access_token', response.data.access_token);
+          const token = response.data.access_token;
+          localStorage.setItem('access_token', token);
+          const decoded = decodeJWT(token);
+          if (decoded?.role) {
+            localStorage.setItem('user_role', decoded.role);
+          }
           navigate('/home');
         }
       })

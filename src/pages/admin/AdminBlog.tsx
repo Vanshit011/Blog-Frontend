@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { Blog } from '../../shared/constants/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
+import { toast } from 'sonner';
 
 const AdminBlog = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -49,10 +50,11 @@ const AdminBlog = () => {
     if (window.confirm('Are you sure you want to delete this blog post?')) {
       try {
         await deleteBlog(id);
+        toast.success('Blog post deleted successfully');
         fetchBlogs();
       } catch (error) {
         console.error('Failed to delete blog', error);
-        alert('Failed to delete blog post.');
+        toast.error('Failed to delete blog post.');
       }
     }
   };

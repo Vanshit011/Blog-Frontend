@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { getGoogleAdminLoginUrl } from '../../services/api';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { decodeJWT } from '../../shared/utils';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -11,6 +12,10 @@ const AdminLogin = () => {
     const token = params.get('token');
     if (token) {
       localStorage.setItem('access_token', token);
+      const decoded = decodeJWT(token);
+      if (decoded?.role) {
+        localStorage.setItem('user_role', decoded.role);
+      }
       console.log('Admin Login successful via Google');
       window.history.replaceState({}, document.title, window.location.pathname);
       navigate('/admin/dashboard');

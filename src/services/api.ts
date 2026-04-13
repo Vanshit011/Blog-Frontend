@@ -50,9 +50,10 @@ export const getGoogleUserLoginUrl = () => {
 export const createBlogPost = (
   title: string,
   content: string,
-  slug: string
+  slug: string,
+  coverImage?: string
 ) => {
-  return API.post('/blog/create', { title, content, slug });
+  return API.post('/blog/create', { title, content, slug, coverImage });
 };
 
 export const getAdminBlogs = (page: number, limit: number, search: string) => {
@@ -69,9 +70,10 @@ export const updateBlog = (
   id: string,
   title?: string,
   content?: string,
-  slug?: string
+  slug?: string,
+  coverImage?: string
 ) => {
-  return API.patch(`/blog/${id}`, { title, content, slug });
+  return API.patch(`/blog/${id}`, { title, content, slug, coverImage });
 };
 
 export const deleteBlog = (id: string) => {
