@@ -56,6 +56,10 @@ export const createBlogPost = (
   return API.post('/blog/create', { title, content, slug, coverImage });
 };
 
+export const generateContent = (title: string, keywords?: string) => {
+  return API.post('/blog/generate-content', { title, keywords });
+};
+
 export const getAdminBlogs = (page: number, limit: number, search: string) => {
   return API.get(`/blog/my-blogs`, {
     params: { page, limit, search },

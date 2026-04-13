@@ -23,4 +23,5 @@ export interface EditBlogForm {
   content: string;
   slug: string;
   coverImage: string;
+  keywords?: string;
 }

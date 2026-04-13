@@ -11,6 +11,9 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
 import type { ErrorResponse } from '../../shared/constants/types';
+import { generateContent } from '../../services/api';
+import { Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 
 const CreateBlog = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +23,8 @@ const CreateBlog = () => {
     coverImage: '',
   });
   const [loading, setLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [keywords, setKeywords] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -67,6 +72,36 @@ const CreateBlog = () => {
       .setLink({ href: url })
       .run();
   }, [editor]);
+
+  const handleGenerateAI = async () => {
+    if (!formData.title) {
+      toast.error('Please enter a title first to generate content.');
+      return;
+    }
+
+    if (
+      formData.content &&
+      !window.confirm(
+        'This will overwrite your current content. Do you want to proceed?'
+      )
+    ) {
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await generateContent(formData.title, keywords);
+      const generatedContent = response.data.content;
+      editor?.commands.setContent(generatedContent);
+      setFormData((prev) => ({ ...prev, content: generatedContent }));
+      toast.success('Content generated successfully!');
+    } catch (err) {
+      console.error('Failed to generate content', err);
+      toast.error('Failed to generate content. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,6 +248,40 @@ const CreateBlog = () => {
                 <p className="text-sm font-medium">{error}</p>
               </div>
             )}
+
+            <div className="mx-6 mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="text-indigo-600" size={20} />
+                <h3 className="font-bold text-indigo-900">AI Content Generator</h3>
+              </div>
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Enter keywords (e.g. tech, future, nodejs)"
+                  className="flex-1 border-gray-200 border p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={handleGenerateAI}
+                  disabled={isGenerating || !formData.title}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 transition-all"
+                >
+                  {isGenerating ? (
+                    'Generating...'
+                  ) : (
+                    <>
+                      <Sparkles size={16} />
+                      Generate
+                    </>
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-indigo-600 mt-2">
+                Tip: Enter a clear title and optional keywords for best results.
+              </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="space-y-4">
