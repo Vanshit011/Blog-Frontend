@@ -15,4 +15,12 @@ export interface Blog {
   created_at?: string;
   status?: string;
   author?: Author;
+  coverImage?: string;
+}
+
+export interface EditBlogForm {
+  title: string;
+  content: string;
+  slug: string;
+  coverImage: string;
 }

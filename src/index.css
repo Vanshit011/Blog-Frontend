@@ -1,8 +1,13 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/inter/index.css';
 @import '@fontsource/dm-sans/index.css';
+
+@theme {
+  /* You can add custom theme variables here for v4 */
+}
 
 @layer base {
   *,

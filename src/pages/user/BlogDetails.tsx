@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getBlogByID } from '../../services/api';
-import { User as UserIcon, Calendar, ArrowLeft } from 'lucide-react';
+import { User as UserIcon, Calendar } from 'lucide-react';
 import type { Blog } from '../../shared/constants/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
+import Navbar from '../../common/Navbar';
 
 const BlogDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,19 +29,7 @@ const BlogDetails = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <button
-              onClick={() => navigate('/home')}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back to blogs
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar showBack />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {loading ? (
@@ -86,9 +74,9 @@ const BlogDetails = () => {
               </div>
             </header>
 
-            <div className="prose prose-lg prose-indigo mx-auto text-gray-800 break-words whitespace-pre-wrap leading-relaxed">
-              {blog.content}
-            </div>
+            <div className="prose prose-lg prose-indigo mx-auto text-gray-800 break-words whitespace-pre-wrap leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: blog.content }}
+            />
           </article>
         )}
       </main>

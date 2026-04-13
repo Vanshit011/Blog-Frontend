@@ -29,7 +29,10 @@ const BlogDetail = () => {
     fetchBlog();
   }, [id]);
 
-  if (loading) return <LoadingSpinner className="p-12 w-full flex justify-center items-center h-screen" />;
+  if (loading)
+    return (
+      <LoadingSpinner className="p-12 w-full flex justify-center items-center h-screen" />
+    );
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
