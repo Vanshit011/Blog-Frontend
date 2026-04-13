@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBlogByID } from '../../services/api';
-import { User as UserIcon, Calendar } from 'lucide-react';
+import { User as UserIcon, Calendar, Share2 } from 'lucide-react';
 import type { Blog } from '../../shared/constants/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import Navbar from '../../common/Navbar';
+import { toast } from 'sonner';
 
 const BlogDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Link copied to clipboard!');
+  };
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -71,6 +77,14 @@ const BlogDetails = () => {
                     </span>
                   </div>
                 )}
+                <button
+                  onClick={handleShare}
+                  className="inline-flex items-center px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors cursor-pointer font-medium"
+                  title="Share Blog"
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share
+                </button>
               </div>
             </header>
 

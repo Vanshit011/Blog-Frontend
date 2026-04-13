@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
           <div className="flex items-center gap-6">
             {(showBack || isDetailsPage) && (
               <button
-                onClick={() => navigate('/home')}
+                onClick={() => navigate('/admin/blog')}
                 className="group flex items-center justify-center w-11 h-11 rounded-2xl bg-gray-50 text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-300 border border-gray-100"
                 title="Back to home"
               >

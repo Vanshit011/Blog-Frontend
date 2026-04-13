@@ -10,6 +10,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Share2,
 } from 'lucide-react';
 import type { Blog } from '../../shared/constants/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
@@ -128,7 +129,11 @@ const AdminBlog = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {blogs.map((blog) => (
-                      <tr key={blog.id} className="hover:bg-gray-50">
+                      <tr
+                        key={blog.id}
+                        className="hover:bg-gray-50 cursor-pointer transition-colors"
+                        onClick={() => navigate(`/blog/${blog.id}`)}
+                      >
                         <td className="px-6 py-4 text-sm font-medium text-gray-900">
                           {blog.title}
                         </td>
@@ -149,16 +154,34 @@ const AdminBlog = () => {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
+                            {blog.status === 'PUBLISHED' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const url = `${window.location.origin}/blog/${blog.id}`;
+                                  navigator.clipboard.writeText(url);
+                                  toast.success('Link copied to clipboard!');
+                                }}
+                                className="text-green-600 bg-green-50 p-2 rounded-md hover:bg-green-100"
+                                title="Copy public link"
+                              >
+                                <Share2 size={16} />
+                              </button>
+                            )}
                             <button
-                              onClick={() =>
-                                navigate(`/admin/blog/edit/${blog.id}`)
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/admin/blog/edit/${blog.id}`);
+                              }}
                               className="text-indigo-600 bg-indigo-50 p-2 rounded-md hover:bg-indigo-100"
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
-                              onClick={() => handleDelete(blog.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(blog.id);
+                              }}
                               className="text-red-600 bg-red-50 p-2 rounded-md hover:bg-red-100"
                             >
                               <Trash2 size={16} />
