@@ -11,11 +11,11 @@ interface NotificationDropdownProps {
   onClose: () => void;
 }
 
-const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ 
-  notifications, 
-  onRefresh, 
-  isOpen, 
-  onClose 
+const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
+  notifications,
+  onRefresh,
+  isOpen,
+  onClose,
 }) => {
   if (!isOpen) return null;
 
@@ -30,14 +30,11 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 
   return (
     <>
-      <div 
-        className="fixed inset-0 z-40 bg-transparent" 
-        onClick={onClose} 
-      />
+      <div className="fixed inset-0 z-40 bg-transparent" onClick={onClose} />
       <div className="absolute right-0 mt-4 w-96 max-h-[500px] overflow-hidden bg-white/90 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl shadow-indigo-100 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <h3 className="text-lg font-black text-gray-900">Notifications</h3>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
           >
@@ -49,15 +46,19 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
           {notifications.length > 0 ? (
             <div className="divide-y divide-gray-50">
               {notifications.map((notif) => (
-                <div 
-                  key={notif.id} 
+                <div
+                  key={notif.id}
                   className={`p-5 hover:bg-indigo-50/50 transition-all group relative ${!notif.isRead ? 'bg-indigo-50/20' : ''}`}
                 >
                   <div className="flex gap-4">
-                    <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notif.isRead ? 'bg-indigo-600' : 'bg-transparent'}`} />
+                    <div
+                      className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notif.isRead ? 'bg-indigo-600' : 'bg-transparent'}`}
+                    />
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between items-start">
-                        <p className={`text-sm font-bold ${!notif.isRead ? 'text-gray-900' : 'text-gray-600'}`}>
+                        <p
+                          className={`text-sm font-bold ${!notif.isRead ? 'text-gray-900' : 'text-gray-600'}`}
+                        >
                           {notif.title}
                         </p>
                         {!notif.isRead && (
@@ -74,7 +75,11 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                         {notif.message}
                       </p>
                       <p className="text-[11px] font-semibold text-gray-400 mt-2">
-                        {new Date(notif.created_at).toLocaleDateString()} at {new Date(notif.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(notif.created_at).toLocaleDateString()} at{' '}
+                        {new Date(notif.created_at).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </p>
                     </div>
                   </div>
