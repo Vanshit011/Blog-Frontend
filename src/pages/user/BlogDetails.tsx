@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBlogByID } from '../../services/api';
-import { User as UserIcon, Calendar, Share2 } from 'lucide-react';
+import { User as UserIcon, Calendar, Share2, Clock } from 'lucide-react';
 import type { Blog } from '../../shared/constants/types';
+import { calculateReadTime } from '../../shared/utils';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import Navbar from '../../common/Navbar';
 import { toast } from 'sonner';
@@ -69,8 +70,12 @@ const BlogDetails = () => {
                     }
                   )}
                 </div>
+                <div className="flex items-center border-l border-gray-100 pl-6 h-4">
+                  <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                  <span>{calculateReadTime(blog.content)}</span>
+                </div>
                 {blog.author && (
-                  <div className="flex items-center">
+                  <div className="flex items-center border-l border-gray-100 pl-6 h-4">
                     <UserIcon className="w-4 h-4 mr-2" />
                     <span>
                       {blog.author.first_name} {blog.author.last_name}

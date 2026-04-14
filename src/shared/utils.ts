@@ -19,3 +19,15 @@ export const decodeJWT = (token: string) => {
     return null;
   }
 };
+
+export const stripHtml = (html: string) => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || '';
+};
+
+export const calculateReadTime = (content: string) => {
+  const text = stripHtml(content);
+  const words = text.trim().split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return `${minutes} min read`;
+};
