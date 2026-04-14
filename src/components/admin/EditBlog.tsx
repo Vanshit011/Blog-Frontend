@@ -45,6 +45,7 @@ const EditBlog = () => {
             content: blog.content,
             slug: blog.slug,
             coverImage: blog.coverImage || '',
+            status: blog.status,
           });
         }
       } catch (err) {
@@ -99,7 +100,8 @@ const EditBlog = () => {
           data.title,
           data.content,
           data.slug,
-          data.coverImage
+          data.coverImage,
+          data.status
         );
         toast.success('Blog updated successfully!');
         navigate('/admin/blog');
@@ -242,6 +244,25 @@ const EditBlog = () => {
                 {errors.content && (
                   <span className="text-red-500 text-sm mt-1 inline-block">
                     {errors.content.message}
+                  </span>
+                )}
+              </div>
+              <div>
+                <label className="block ">Status</label>
+                <select
+                  {...register('status', { required: 'Status is required' })}
+                  className={`w-full px-4 py-3 text-gray-900 border rounded-lg focus:ring-2 focus:border-transparent transition-all outline-none shadow-sm ${
+                    errors.status
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-indigo-500'
+                  }`}
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+                {errors.status && (
+                  <span className="text-red-500 text-sm mt-1 inline-block">
+                    {errors.status.message}
                   </span>
                 )}
               </div>

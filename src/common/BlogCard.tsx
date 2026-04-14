@@ -58,7 +58,11 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
 
           <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
             {blog.author && (
-              <div className="flex items-center">
+              <Link 
+                to={`/author/${blog.author.username || blog.author.id}`}
+                className="flex items-center hover:opacity-80 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center mr-3 border border-indigo-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all duration-300">
                   <User className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors duration-300" />
                 </div>
@@ -68,7 +72,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
                   </p>
                   <p className="text-xs text-gray-400">Author</p>
                 </div>
-              </div>
+              </Link>
             )}
 
             <div className="flex items-center text-indigo-600 font-bold text-sm tracking-wide group/btn">

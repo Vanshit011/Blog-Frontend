@@ -6,7 +6,11 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
+    {
+      name: 'Dashboard',
+      path: '/admin/dashboard',
+      icon: <LayoutDashboard size={20} />,
+    },
     { name: 'Blogs', path: '/admin/blog', icon: <FileText size={20} /> },
   ];
 
@@ -18,18 +22,23 @@ const Sidebar = () => {
         </h2>
         <nav className="space-y-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path));
+            const isActive =
+              location.pathname === item.path ||
+              (item.path !== '/admin/dashboard' &&
+                location.pathname.startsWith(item.path));
             return (
               <button
                 key={item.name}
-                onClick={() => navigate(item.path)}
+                onClick={() => navigate(item.path!)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all font-medium text-sm ${
                   isActive
                     ? 'bg-indigo-50 text-indigo-700 shadow-sm'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 text-left'
                 }`}
               >
-                <span className={`${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'}`}>
+                <span
+                  className={`${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'}`}
+                >
                   {item.icon}
                 </span>
                 {item.name}

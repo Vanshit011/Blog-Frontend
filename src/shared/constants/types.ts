@@ -6,6 +6,9 @@ export interface Author {
   id: string;
   first_name: string;
   last_name: string;
+  username?: string;
+  about?: string;
+  display_name?: string;
 }
 export interface Blog {
   id: string;
@@ -23,5 +26,6 @@ export interface EditBlogForm {
   content: string;
   slug: string;
   coverImage: string;
+  status: string;
   keywords?: string;
 }
