@@ -21,6 +21,7 @@ const CreateBlog = () => {
     content: '',
     slug: '',
     coverImage: '',
+    status: '',
   });
   const [loading, setLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -112,8 +113,10 @@ const CreateBlog = () => {
         formData.title,
         formData.content,
         formData.slug,
-        formData.coverImage
+        formData.coverImage,
+        formData.status
       );
+      toast.success('Blog post published successfully!');
       navigate('/admin/blog');
     } catch (err) {
       const axiosError = err as AxiosError<ErrorResponse>;
@@ -252,7 +255,9 @@ const CreateBlog = () => {
             <div className="mx-6 mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="text-indigo-600" size={20} />
-                <h3 className="font-bold text-indigo-900">AI Content Generator</h3>
+                <h3 className="font-bold text-indigo-900">
+                  AI Content Generator
+                </h3>
               </div>
               <div className="flex gap-3">
                 <input
@@ -321,6 +326,22 @@ const CreateBlog = () => {
                       setFormData({ ...formData, coverImage: e.target.value })
                     }
                   />
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <select
+                      name="status"
+                      className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                      value={formData.status}
+                      onChange={(e) =>
+                        setFormData({ ...formData, status: e.target.value })
+                      }
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                    </select>
+                  </div>
                   {formData.coverImage && (
                     <div className="relative group overflow-hidden rounded-xl border border-gray-100 shadow-sm aspect-video max-h-48">
                       <img

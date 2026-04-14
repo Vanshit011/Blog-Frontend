@@ -111,6 +111,9 @@ const AdminBlog = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Image
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                         Title
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -134,6 +137,13 @@ const AdminBlog = () => {
                         className="hover:bg-gray-50 cursor-pointer transition-colors"
                         onClick={() => navigate(`/blog/${blog.id}`)}
                       >
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                          <img
+                            src={blog.coverImage}
+                            alt={blog.title}
+                            className="w-20 h-20 object-cover"
+                          />
+                        </td>
                         <td className="px-6 py-4 text-sm font-medium text-gray-900">
                           {blog.title}
                         </td>

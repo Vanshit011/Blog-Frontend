@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
+import type { Author } from '../shared/constants/types';
 
 const API: AxiosInstance = axios.create({
   baseURL: (import.meta as ImportMeta).env.VITE_API || 'http://localhost:3001',
@@ -51,9 +52,10 @@ export const createBlogPost = (
   title: string,
   content: string,
   slug: string,
-  coverImage?: string
+  coverImage?: string,
+  status?: string
 ) => {
-  return API.post('/blog/create', { title, content, slug, coverImage });
+  return API.post('/blog/create', { title, content, slug, coverImage, status });
 };
 
 export const generateContent = (title: string, keywords?: string) => {
@@ -75,9 +77,10 @@ export const updateBlog = (
   title?: string,
   content?: string,
   slug?: string,
-  coverImage?: string
+  coverImage?: string,
+  status?: string
 ) => {
-  return API.patch(`/blog/${id}`, { title, content, slug, coverImage });
+  return API.patch(`/blog/${id}`, { title, content, slug, coverImage, status });
 };
 
 export const deleteBlog = (id: string) => {
@@ -87,6 +90,30 @@ export const deleteBlog = (id: string) => {
 //user Blog Management
 export const getAllBlogs = (page: number, limit: number, search: string) => {
   return API.get('/blog/all', {
+    params: { page, limit, search },
+  });
+};
+
+// User Profile & Author Blogs
+export const getMyProfile = () => {
+  return API.get('/user/profile');
+};
+
+export const updateProfile = (id: string, data: Partial<Author>) => {
+  return API.patch(`/user/profile/${id}`, data);
+};
+
+export const getPublicProfile = (identifier: string) => {
+  return API.get(`/user/${identifier}`);
+};
+
+export const getAuthorBlogs = (
+  authorId: string,
+  page: number = 1,
+  limit: number = 10,
+  search: string = ''
+) => {
+  return API.get(`/user/${authorId}/blogs`, {
     params: { page, limit, search },
   });
 };

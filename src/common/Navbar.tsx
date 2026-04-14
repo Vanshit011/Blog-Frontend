@@ -1,6 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, LogOut, ArrowLeft, PenLine } from 'lucide-react';
+import { LayoutDashboard, LogOut, ArrowLeft, PenLine, UserCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useProfileStore } from '../hooks/useProfileStore';
 
 interface NavbarProps {
   showBack?: boolean;
@@ -9,6 +10,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { onOpen } = useProfileStore();
   const isLoggedIn = !!localStorage.getItem('access_token');
 
   const handleLogout = () => {
@@ -28,7 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
           <div className="flex items-center gap-6">
             {(showBack || isDetailsPage) && (
               <button
-                onClick={() => navigate('/admin/blog')}
+                onClick={() => navigate('/home')}
                 className="group flex items-center justify-center w-11 h-11 rounded-2xl bg-gray-50 text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-300 border border-gray-100"
                 title="Back to home"
               >
@@ -55,6 +57,13 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
+                <button
+                  onClick={onOpen}
+                  className="flex items-center px-4 py-3 rounded-2xl text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group"
+                >
+                  <UserCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  <span className="font-semibold">Profile</span>
+                </button>
                 <button
                   onClick={handleLogout}
                   className="flex items-center px-4 py-3 rounded-2xl text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all duration-300 group"

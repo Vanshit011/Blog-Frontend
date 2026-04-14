@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRole?: 'admin' | 'user';
+  allowedRole?: 'admin' | 'user' | ('admin' | 'user')[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -19,11 +19,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={loginPath} state={{ from: location }} replace />;
   }
 
-  if (allowedRole && userRole !== allowedRole) {
-    console.warn(
-      `Access denied: Required role ${allowedRole}, but user has ${userRole}`
-    );
-    return <Navigate to="/home" replace />;
+  if (allowedRole) {
+    const roles = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
+    if (!roles.includes(userRole as 'admin' | 'user')) {
+      console.warn(
+        `Access denied: Required roles ${roles.join(', ')}, but user has ${userRole}`
+      );
+      return <Navigate to="/home" replace />;
+    }
   }
 
   return <>{children}</>;

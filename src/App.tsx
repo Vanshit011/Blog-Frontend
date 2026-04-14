@@ -13,6 +13,8 @@ import AdminBlog from './pages/admin/AdminBlog';
 import CreateBlog from './components/admin/CreateBlog';
 import EditBlog from './components/admin/EditBlog';
 import BlogDetails from './pages/user/BlogDetails';
+import AuthorProfile from './pages/user/AuthorProfile';
+import ProfileModal from './components/modals/ProfileModal';
 import ProtectedRoute from './route/ProtectedRoute';
 import { Toaster } from 'sonner';
 import './App.css';
@@ -62,11 +64,12 @@ function App() {
           <Route path="/login" element={<UserLogin />} />
           <Route path="/home" element={<Home />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
-
+          <Route path="/author/:identifier" element={<AuthorProfile />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </Router>
       <Toaster richColors position="top-right" />
+      <ProfileModal />
     </>
   );
 }
