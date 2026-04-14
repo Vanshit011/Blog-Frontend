@@ -15,6 +15,7 @@ import {
 import type { Blog } from '../../shared/constants/types';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { toast } from 'sonner';
+import { calculateReadTime } from '../../shared/utils';
 
 const AdminBlog = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -123,6 +124,9 @@ const AdminBlog = () => {
                         Created
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Read Time
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                         Status
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
@@ -154,6 +158,9 @@ const AdminBlog = () => {
                           {blog.created_at
                             ? new Date(blog.created_at).toLocaleDateString()
                             : 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          {calculateReadTime(blog.content)}
                         </td>
                         <td className="px-6 py-4">
                           <span

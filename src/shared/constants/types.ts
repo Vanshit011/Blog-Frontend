@@ -29,3 +29,11 @@ export interface EditBlogForm {
   status: string;
   keywords?: string;
 }
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  created_at: string;
+}

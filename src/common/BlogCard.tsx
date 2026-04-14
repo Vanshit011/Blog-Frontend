@@ -1,20 +1,16 @@
 import React from 'react';
-import { User, Calendar, ArrowRight } from 'lucide-react';
+import { User, Calendar, ArrowRight, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { Blog } from '../shared/constants/types';
+import { stripHtml, calculateReadTime } from '../shared/utils';
 
 interface BlogCardProps {
   blog: Blog;
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
-  const stripHtml = (html: string) => {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
-
   const contentSnippet = stripHtml(blog.content).substring(0, 150) + '...';
+  const readTime = calculateReadTime(blog.content);
 
   return (
     <div className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-indigo-100/50 transition-all duration-500 flex flex-col h-full transform hover:-translate-y-2">
@@ -45,6 +41,10 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
                     day: 'numeric',
                   })
                 : 'New'}
+            </div>
+            <div className="flex items-center text-gray-400 border-l border-gray-100 pl-4">
+              <Clock className="w-4 h-4 mr-1.5" />
+              {readTime}
             </div>
           </div>
 

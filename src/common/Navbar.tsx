@@ -3,6 +3,8 @@ import { LayoutDashboard, LogOut, ArrowLeft, PenLine, UserCircle } from 'lucide-
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useProfileStore } from '../hooks/useProfileStore';
 
+import NotificationBell from '../components/notifications/NotificationBell';
+
 interface NavbarProps {
   showBack?: boolean;
 }
@@ -57,6 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
               <div className="flex items-center gap-4">
+                <NotificationBell />
                 <button
                   onClick={onOpen}
                   className="flex items-center px-4 py-3 rounded-2xl text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group"

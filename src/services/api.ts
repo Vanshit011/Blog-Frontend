@@ -113,9 +113,18 @@ export const getAuthorBlogs = (
   limit: number = 10,
   search: string = ''
 ) => {
-  return API.get(`/user/${authorId}/blogs`, {
+  return API.get(`/blog/author/${authorId}`, {
     params: { page, limit, search },
   });
+};
+
+// Notification Management
+export const getMyNotifications = () => {
+  return API.get('/notifications');
+};
+
+export const markNotificationAsRead = (id: string) => {
+  return API.patch(`/notifications/${id}/read`);
 };
 
 export default API;
