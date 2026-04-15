@@ -127,4 +127,30 @@ export const markNotificationAsRead = (id: string) => {
   return API.patch(`/notifications/${id}/read`);
 };
 
+// Comment Management
+export const getComments = (blogId: string) => {
+  return API.get(`/comment/blog/${blogId}`);
+};
+
+export const addComment = (blogId: string, content: string) => {
+  return API.post(`/comment/${blogId}`, { content });
+};
+
+export const deleteComment = (commentId: string) => {
+  return API.delete(`/comment/${commentId}`);
+};
+
+// Like Management
+export const getLikes = (blogId: string) => {
+  return API.get(`/like/blog/${blogId}/likes`);
+};
+
+export const likeBlog = (blogId: string) => {
+  return API.post(`/like/${blogId}`);
+};
+
+export const unlikeBlog = (blogId: string) => {
+  return API.delete(`/like/${blogId}`);
+};
+
 export default API;
