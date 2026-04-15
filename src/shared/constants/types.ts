@@ -10,6 +10,21 @@ export interface Author {
   about?: string;
   display_name?: string;
 }
+export interface Comment {
+  display_name: string;
+  id: string;
+  content: string;
+  created_at: string;
+  user?: Author;
+  userId?: string;
+}
+
+export interface Like {
+  id: string;
+  userId: string;
+  blogId: string;
+}
+
 export interface Blog {
   id: string;
   title: string;
@@ -19,6 +34,10 @@ export interface Blog {
   status?: string;
   author?: Author;
   coverImage?: string;
+  likeCount?: number;
+  commentCount?: number;
+  isLiked?: boolean;
+  comments?: Comment[];
 }
 
 export interface EditBlogForm {
