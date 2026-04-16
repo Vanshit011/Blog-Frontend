@@ -7,7 +7,7 @@ import {
 import AdminLogin from './pages/auth/AdminLogin';
 import UserLogin from './pages/auth/UserLogin';
 import UserSignup from './pages/auth/UserSignup';
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminFollowers from './pages/admin/AdminFollowers';
 import Home from './pages/user/Home';
 import AdminBlog from './pages/admin/AdminBlog';
 import CreateBlog from './components/admin/CreateBlog';
@@ -15,6 +15,7 @@ import EditBlog from './components/admin/EditBlog';
 import BlogDetails from './pages/user/BlogDetails';
 import AuthorProfile from './pages/user/AuthorProfile';
 import ProfileModal from './components/modals/ProfileModal';
+import FollowingModal from './components/modals/FollowingModal';
 import ProtectedRoute from './route/ProtectedRoute';
 import { Toaster } from 'sonner';
 import './App.css';
@@ -27,18 +28,18 @@ function App() {
           {/* admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRole="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/admin/blog"
             element={
               <ProtectedRoute allowedRole="admin">
                 <AdminBlog />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/followers"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminFollowers />
               </ProtectedRoute>
             }
           />
@@ -67,9 +68,10 @@ function App() {
           <Route path="/author/:identifier" element={<AuthorProfile />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
+        <ProfileModal />
+        <FollowingModal />
       </Router>
       <Toaster richColors position="top-right" />
-      <ProfileModal />
     </>
   );
 }

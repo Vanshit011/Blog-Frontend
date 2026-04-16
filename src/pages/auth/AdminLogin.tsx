@@ -18,7 +18,7 @@ const AdminLogin = () => {
       }
       console.log('Admin Login successful via Google');
       window.history.replaceState({}, document.title, window.location.pathname);
-      navigate('/admin/dashboard');
+      navigate('/admin/blog');
     }
   }, [navigate]);
 

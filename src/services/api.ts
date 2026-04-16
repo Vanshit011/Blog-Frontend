@@ -153,4 +153,27 @@ export const unlikeBlog = (blogId: string) => {
   return API.delete(`/like/${blogId}`);
 };
 
+// Follow Management
+export const followAuthor = (authorId: string) => {
+  return API.post(`/follow/${authorId}`);
+};
+
+export const unfollowAuthor = (authorId: string) => {
+  return API.delete(`/follow/${authorId}`);
+};
+
+export const getFollowStats = (authorId: string) => {
+  return API.get(`/follow/stats/${authorId}`);
+};
+
+export const getMyFollowing = () => {
+  return API.get('/follow/my/following');
+};
+
+//admin
+
+export const adminGetMyFollowers = () => {
+  return API.get('/follow/admin/my/followers');
+};
+
 export default API;

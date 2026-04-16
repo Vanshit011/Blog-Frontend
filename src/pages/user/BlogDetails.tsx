@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogByID, getComments } from '../../services/api';
-import { User as UserIcon, Calendar, Share2, Clock } from 'lucide-react';
+import { User as UserIcon, Calendar, Share2, Clock, Lock } from 'lucide-react';
 import type { Blog, Comment } from '../../shared/constants/types';
-import { calculateReadTime } from '../../shared/utils';
+import { calculateReadTime, stripHtml } from '../../shared/utils';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import Navbar from '../../common/Navbar';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import CommentsSection from '../../components/blog/CommentsSection';
 import LikeSection from '../../components/blog/LikeSection';
@@ -50,15 +51,18 @@ const BlogDetails = () => {
     const fetchAll = async () => {
       setLoading(true);
       try {
-        const [blogRes, commentsRes] = await Promise.all([
-          getBlogByID(id),
-          getComments(id),
-        ]);
-
+        const blogRes = await getBlogByID(id);
         setBlog(blogRes.data);
 
-        const raw = commentsRes.data;
-        setComments(Array.isArray(raw) ? raw : (raw?.data ?? []));
+        if (isAuthenticated) {
+          try {
+            const commentsRes = await getComments(id);
+            const raw = commentsRes.data;
+            setComments(Array.isArray(raw) ? raw : (raw?.data ?? []));
+          } catch (err) {
+            console.error('Error fetching comments:', err);
+          }
+        }
       } catch (error) {
         console.error('Error fetching blog:', error);
       } finally {
@@ -67,7 +71,7 @@ const BlogDetails = () => {
     };
 
     fetchAll();
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -115,7 +119,56 @@ const BlogDetails = () => {
                 </div>
               </header>
 
-              <div dangerouslySetInnerHTML={{ __html: blog.content }} />
+              {isAuthenticated ? (
+                <div
+                  className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: blog.content }}
+                />
+              ) : (
+                <div className="relative">
+                  <div
+                    className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed overflow-hidden max-h-[200px] mb-110 blur-[1px] opacity-20 select-none pointer-events-none"
+                    dangerouslySetInnerHTML={{
+                      __html: stripHtml(blog.content).substring(0, 300) + '...',
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent flex flex-col items-center justify-end pb-1 mt-110">
+                    <div className="bg-white rounded-[2rem] p-10 text-center border border-gray-100 shadow-2xl shadow-indigo-100/50 max-w-lg w-full relative group/cta">
+                      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
+
+                      <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-indigo-50 text-indigo-600 mb-8 transform group-hover/cta:scale-110 transition-transform duration-500">
+                        <Lock className="w-10 h-10" />
+                      </div>
+
+                      <h3 className="text-2xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                        Login to Read Full Article
+                      </h3>
+
+                      <p className="text-gray-500 mb-10 text-lg leading-relaxed">
+                        Join our community to access this story and many more
+                        insightful articles.
+                      </p>
+
+                      <Link
+                        to="/login"
+                        className="inline-flex items-center justify-center w-full px-8 py-5 rounded-2xl bg-indigo-600 text-white font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transform hover:-translate-y-1"
+                      >
+                        Sign In to Continue
+                      </Link>
+
+                      <p className="mt-6 text-sm text-gray-400">
+                        Don't have an account?{' '}
+                        <Link
+                          to="/register"
+                          className="text-indigo-600 font-bold hover:underline"
+                        >
+                          Create one
+                        </Link>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </article>
             <div className="mt-10 pt-6 border-t border-gray-100 flex items-center gap-4">
               <LikeSection
