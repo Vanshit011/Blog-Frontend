@@ -56,3 +56,8 @@ export interface Notification {
   isRead: boolean;
   created_at: string;
 }
+export interface FollowStats {
+  followersCount: number;
+  followingCount: number;
+  isFollowing: boolean;
+}

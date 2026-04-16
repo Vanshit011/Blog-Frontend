@@ -1,17 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText } from 'lucide-react';
+import { FileText, Users } from 'lucide-react';
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
-    {
-      name: 'Dashboard',
-      path: '/admin/dashboard',
-      icon: <LayoutDashboard size={20} />,
-    },
     { name: 'Blogs', path: '/admin/blog', icon: <FileText size={20} /> },
+    { name: 'Followers', path: '/admin/followers', icon: <Users size={20} /> },
   ];
 
   return (
@@ -24,7 +20,7 @@ const Sidebar = () => {
           {navItems.map((item) => {
             const isActive =
               location.pathname === item.path ||
-              (item.path !== '/admin/dashboard' &&
+              (item.path !== '/admin/blog' &&
                 location.pathname.startsWith(item.path));
             return (
               <button

@@ -136,11 +136,7 @@ const AdminBlog = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {blogs.map((blog) => (
-                      <tr
-                        key={blog.id}
-                        className="hover:bg-gray-50 cursor-pointer transition-colors"
-                        onClick={() => navigate(`/blog/${blog.id}`)}
-                      >
+                      <tr className="hover:bg-gray-50 cursor-pointer transition-colors">
                         <td className="px-6 py-4 text-sm font-medium text-gray-900">
                           <img
                             src={blog.coverImage}
