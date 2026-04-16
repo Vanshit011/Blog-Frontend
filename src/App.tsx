@@ -16,6 +16,7 @@ import BlogDetails from './pages/user/BlogDetails';
 import AuthorProfile from './pages/user/AuthorProfile';
 import ProfileModal from './components/modals/ProfileModal';
 import FollowingModal from './components/modals/FollowingModal';
+import LogoutModal from './components/modals/LogoutModal';
 import ProtectedRoute from './route/ProtectedRoute';
 import { Toaster } from 'sonner';
 import './App.css';
@@ -70,6 +71,7 @@ function App() {
         </Routes>
         <ProfileModal />
         <FollowingModal />
+        <LogoutModal />
       </Router>
       <Toaster richColors position="top-right" />
     </>

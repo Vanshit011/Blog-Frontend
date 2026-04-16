@@ -30,7 +30,7 @@ const PublicBlogView = () => {
 
     const timer = setTimeout(() => {
       fetchBlogs();
-    }, 500);
+    });
 
     return () => clearTimeout(timer);
   }, [page, limit, search]);
