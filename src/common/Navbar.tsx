@@ -8,8 +8,10 @@ import {
   Users,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../hooks/useAuthStore';
 import { useProfileStore } from '../hooks/useProfileStore';
 import { useFollowingStore } from '../hooks/useFollowingStore';
+import { useLogoutStore } from '../hooks/useLogoutStore';
 
 import NotificationBell from '../components/notifications/NotificationBell';
 
@@ -22,13 +24,20 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
   const location = useLocation();
   const { onOpen } = useProfileStore();
   const { onOpen: onOpenFollowing } = useFollowingStore();
-  const isLoggedIn = !!localStorage.getItem('access_token');
+  const { onOpen: onOpenLogout } = useLogoutStore();
+  const { isAuthenticated: isLoggedIn, userRole } = useAuthStore();
+  const isAdmin = userRole === 'admin';
+
+  const handleLogoClick = () => {
+    if (isAdmin) {
+      navigate('/admin/blog');
+    } else {
+      navigate('/home');
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_role');
-    navigate('/home');
-    window.location.reload();
+    onOpenLogout();
   };
 
   const isDetailsPage = location.pathname.startsWith('/blog/');
@@ -50,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
             )}
 
             <div
-              onClick={() => navigate('/home')}
+              onClick={handleLogoClick}
               className="flex items-center gap-3 cursor-pointer group"
             >
               <div className="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-110 transition-transform duration-300">

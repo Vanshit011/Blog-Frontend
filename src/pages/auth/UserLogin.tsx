@@ -5,7 +5,7 @@ import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../../common/ErrorMessage';
 import FormInput from '../../common/FormInput';
-import { decodeJWT } from '../../shared/utils';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 const UserLogin = () => {
   const [apiError, setApiError] = useState<string | null>(null);
@@ -15,31 +15,24 @@ const UserLogin = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      localStorage.setItem('access_token', token);
-      const decoded = decodeJWT(token);
-      if (decoded?.role) {
-        localStorage.setItem('user_role', decoded.role);
-      }
+      login(token);
       window.history.replaceState({}, document.title, window.location.pathname);
       navigate('/home');
     }
-  }, [navigate]);
+  }, [navigate, login]);
 
   const onSubmit = (data: Record<string, string>) => {
     userLogin(data.email, data.password)
       .then((response) => {
         if (response.data.access_token) {
           const token = response.data.access_token;
-          localStorage.setItem('access_token', token);
-          const decoded = decodeJWT(token);
-          if (decoded?.role) {
-            localStorage.setItem('user_role', decoded.role);
-          }
+          login(token);
           navigate('/home');
         }
       })

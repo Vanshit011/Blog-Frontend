@@ -6,25 +6,15 @@ import { useFollowingStore } from '../../hooks/useFollowingStore';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Link } from 'react-router-dom';
 
-interface FollowedAuthor {
-  id: string;
-  first_name: string;
-  last_name: string;
-  display_name: string;
-  username: string;
-  followed_at: string;
-}
-
 const FollowingModal = () => {
-  const { isOpen, onClose } = useFollowingStore();
-  const [loading, setLoading] = useState(true);
-  const [following, setFollowing] = useState<FollowedAuthor[]>([]);
+  const { isOpen, onClose, following, setFollowing } = useFollowingStore();
+  const [loading, setLoading] = useState(false);
 
   const isAuthenticated = !!localStorage.getItem('access_token');
 
   const fetchFollowing = useCallback(async () => {
     try {
-      setLoading(true);
+      if (following.length === 0) setLoading(true); 
       const response = await getMyFollowing();
       setFollowing(response.data.following || []);
     } catch {
@@ -32,7 +22,7 @@ const FollowingModal = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [following.length, setFollowing]);
 
   useEffect(() => {
     if (isOpen && isAuthenticated) {

@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 import CommentsSection from '../../components/blog/CommentsSection';
 import LikeSection from '../../components/blog/LikeSection';
 
+import { useAuthStore } from '../../hooks/useAuthStore';
+
 const BlogDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -20,8 +22,7 @@ const BlogDetails = () => {
 
   const [comments, setComments] = useState<Comment[]>([]);
 
-  const token = localStorage.getItem('access_token');
-  const isAuthenticated = !!token;
+  const { token, isAuthenticated } = useAuthStore();
 
   const getCurrentUserId = (): string | null => {
     if (!token) return null;
@@ -175,6 +176,8 @@ const BlogDetails = () => {
                 blogId={blog.id}
                 userId={currentUserId}
                 token={token}
+                initialLikes={blog.likeCount}
+                initialIsLiked={blog.isLiked}
               />
             </div>
 

@@ -7,15 +7,23 @@ interface LikeSectionProps {
   blogId: string;
   userId?: string | null;
   token?: string | null;
+  initialLikes?: number;
+  initialIsLiked?: boolean;
 }
 
-const LikeSection = ({ blogId, userId, token }: LikeSectionProps) => {
-  const [likes, setLikes] = useState<number>(0);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+const LikeSection = ({
+  blogId,
+  userId,
+  token,
+  initialLikes = 0,
+  initialIsLiked = false,
+}: LikeSectionProps) => {
+  const [likes, setLikes] = useState<number>(initialLikes);
+  const [isLiked, setIsLiked] = useState<boolean>(initialIsLiked);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!blogId) return;
+    if (!blogId || !token) return;
 
     const fetchLikes = async () => {
       try {
@@ -29,7 +37,7 @@ const LikeSection = ({ blogId, userId, token }: LikeSectionProps) => {
     };
 
     fetchLikes();
-  }, [blogId, userId]);
+  }, [blogId, userId, token]);
 
   const handleLike = async () => {
     if (!token) {

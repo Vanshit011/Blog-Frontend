@@ -24,6 +24,7 @@ import BlogCard from '../../common/BlogCard';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import type { Blog, FollowStats } from '../../shared/constants/types';
 import * as Dialog from '@radix-ui/react-dialog';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 interface AuthorData {
   id: string;
@@ -48,7 +49,8 @@ const AuthorProfile = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
 
-  const token = localStorage.getItem('access_token');
+  const { token, isAuthenticated } = useAuthStore();
+
   const currentUserId = useMemo(() => {
     if (!token) return null;
     try {
@@ -88,7 +90,7 @@ const AuthorProfile = () => {
 
   useEffect(() => {
     fetchAuthorData();
-  }, [fetchAuthorData]);
+  }, [fetchAuthorData, token, isAuthenticated]);
 
   const handleFollowToggle = async () => {
     if (!token) {
@@ -176,7 +178,7 @@ const AuthorProfile = () => {
               )}
 
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm font-semibold text-gray-500">
-                <div 
+                <div
                   onClick={() => setIsFollowersModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-indigo-100 hover:bg-indigo-50/30 transition-all group/stat"
                 >
@@ -254,11 +256,14 @@ const AuthorProfile = () => {
       </main>
 
       {/* Followers Lock Modal */}
-      <Dialog.Root open={isFollowersModalOpen} onOpenChange={setIsFollowersModalOpen}>
+      <Dialog.Root
+        open={isFollowersModalOpen}
+        onOpenChange={setIsFollowersModalOpen}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] animate-in fade-in duration-300" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl z-[101] border border-indigo-50 animate-in zoom-in-95 duration-300 outline-none overflow-hidden p-10 text-center">
-            <button 
+            <button
               onClick={() => setIsFollowersModalOpen(false)}
               className="absolute top-6 right-6 p-2 hover:bg-gray-100 text-gray-400 hover:text-gray-900 rounded-xl transition-all"
             >
@@ -270,24 +275,31 @@ const AuthorProfile = () => {
                 <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mb-8 transform hover:scale-110 transition-transform duration-500">
                   <Lock className="w-10 h-10" />
                 </div>
-                
+
                 <h3 className="text-2xl font-black text-gray-900 mb-4 tracking-tight">
                   Members Only Access
                 </h3>
-                
+
                 <p className="text-gray-500 mb-10 text-lg leading-relaxed">
-                  Sign in to see who is following this author and connect with the community.
+                  Sign in to see who is following this author and connect with
+                  the community.
                 </p>
-                
-                <Link 
+
+                <Link
                   to="/login"
                   className="w-full py-5 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-100 hover:shadow-indigo-200 hover:bg-indigo-700 transition-all transform hover:-translate-y-1 text-center text-lg"
                 >
                   Sign In to View
                 </Link>
-                
+
                 <p className="mt-6 text-sm text-gray-400 font-semibold">
-                  New here? <Link to="/register" className="text-indigo-600 hover:underline">Create an account</Link>
+                  New here?{' '}
+                  <Link
+                    to="/register"
+                    className="text-indigo-600 hover:underline"
+                  >
+                    Create an account
+                  </Link>
                 </p>
               </div>
             ) : (
@@ -295,8 +307,12 @@ const AuthorProfile = () => {
                 <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 mb-8">
                   <Users className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 mb-2">Following List</h3>
-                <p className="text-gray-500 font-medium">Coming soon for members!</p>
+                <h3 className="text-2xl font-black text-gray-900 mb-2">
+                  Following List
+                </h3>
+                <p className="text-gray-500 font-medium">
+                  Coming soon for members!
+                </p>
               </div>
             )}
           </Dialog.Content>

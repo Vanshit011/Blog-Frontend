@@ -3,7 +3,9 @@ import Sidebar from '../../components/admin/sidebar';
 import Header from '../../common/Header';
 import { adminGetMyFollowers } from '../../services/api';
 import { Users, Search, UserCircle } from 'lucide-react';
+import { useMemo } from 'react';
 import { toast } from 'sonner';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface FollowerUser {
   id: string;
@@ -19,6 +21,7 @@ const AdminFollowers = () => {
   const [followers, setFollowers] = useState<FollowerUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebounce(searchQuery, 300);
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,12 +39,14 @@ const AdminFollowers = () => {
     fetchData();
   }, []);
 
-  const currentList = activeTab === 'followers' ? followers : [];
-  const filteredList = currentList.filter((user) =>
-    `${user.first_name} ${user.last_name} ${user.username}`
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
-  );
+  const filteredList = useMemo(() => {
+    const currentList = activeTab === 'followers' ? followers : [];
+    return currentList.filter((user) =>
+      `${user.first_name} ${user.last_name} ${user.username}`
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase())
+    );
+  }, [activeTab, followers, debouncedSearch]);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fafc] font-sans">

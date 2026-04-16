@@ -2,25 +2,22 @@ import { useEffect } from 'react';
 import { getGoogleAdminLoginUrl } from '../../services/api';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { decodeJWT } from '../../shared/utils';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      localStorage.setItem('access_token', token);
-      const decoded = decodeJWT(token);
-      if (decoded?.role) {
-        localStorage.setItem('user_role', decoded.role);
-      }
+      login(token);
       console.log('Admin Login successful via Google');
       window.history.replaceState({}, document.title, window.location.pathname);
       navigate('/admin/blog');
     }
-  }, [navigate]);
+  }, [navigate, login]);
 
   const handleGoogleLogin = () => {
     window.location.href = getGoogleAdminLoginUrl();
