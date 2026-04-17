@@ -88,10 +88,24 @@ export const deleteBlog = (id: string) => {
 };
 
 //user Blog Management
-export const getAllBlogs = (page: number, limit: number, search: string) => {
+export const getAllBlogs = (
+  page: number,
+  limit: number,
+  search: string,
+  categoryId?: string
+) => {
   return API.get('/blog/all', {
-    params: { page, limit, search },
+    params: { page, limit, search, category_id: categoryId },
   });
+};
+
+//category
+export const createCategory = (name: string) => {
+  return API.post('/category', { name });
+};
+
+export const getCategories = () => {
+  return API.get('/category');
 };
 
 // User Profile & Author Blogs

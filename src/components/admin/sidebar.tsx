@@ -8,6 +8,11 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Blogs', path: '/admin/blog', icon: <FileText size={20} /> },
     { name: 'Followers', path: '/admin/followers', icon: <Users size={20} /> },
+    {
+      name: 'Categories',
+      path: '/admin/categories',
+      icon: <Users size={20} />,
+    },
   ];
 
   return (

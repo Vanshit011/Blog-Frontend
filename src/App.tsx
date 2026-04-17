@@ -20,6 +20,7 @@ import LogoutModal from './components/modals/LogoutModal';
 import ProtectedRoute from './route/ProtectedRoute';
 import { Toaster } from 'sonner';
 import { useInitAuth } from './hooks/useInitAuth';
+import AdminCategories from './components/admin/CreateCategory';
 import './App.css';
 
 function App() {
@@ -43,6 +44,14 @@ function App() {
             element={
               <ProtectedRoute allowedRole="admin">
                 <AdminFollowers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminCategories />
               </ProtectedRoute>
             }
           />
