@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getAllBlogs } from '../../services/api';
+import { getAllBlogs, getCategories } from '../../services/api';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
-import type { Blog } from '../../shared/constants/types';
+import type { Blog, Category } from '../../shared/constants/types';
 import BlogCard from '../../common/BlogCard';
 
 const PublicBlogView = () => {
@@ -11,12 +11,31 @@ const PublicBlogView = () => {
   const [limit] = useState(6);
   const [search, setSearch] = useState('');
   const [totalPages, setTotalPages] = useState(1);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data || []);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+
     const fetchBlogs = async () => {
       setLoading(true);
       try {
-        const response = await getAllBlogs(page, limit, search);
+        const response = await getAllBlogs(
+          page,
+          limit,
+          search,
+          selectedCategoryId || undefined
+        );
         setBlogs(response.data.data || []);
         if (response.data.meta) {
           setTotalPages(response.data.meta.lastPage);
@@ -30,15 +49,48 @@ const PublicBlogView = () => {
 
     const timer = setTimeout(() => {
       fetchBlogs();
-    });
+    }, 300); // Add a small debounce for search
 
     return () => clearTimeout(timer);
-  }, [page, limit, search]);
+  }, [page, limit, search, selectedCategoryId]);
 
   return (
     <div className="bg-[#fafbff] min-h-screen py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
+        <div className="flex flex-col items-center text-center mb-12">
+          <div className="flex flex-wrap justify-center gap-3 max-w-4xl">
+            <button
+              onClick={() => {
+                setSelectedCategoryId(null);
+                setPage(1);
+              }}
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${
+                selectedCategoryId === null
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200'
+                  : 'bg-white text-gray-600 border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50'
+              }`}
+            >
+              All Categories
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  setSelectedCategoryId(category.id);
+                  setPage(1);
+                }}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${
+                  selectedCategoryId === category.id
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-200'
+                    : 'bg-white text-gray-600 border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex flex-col items-center text-center mb-20">
           <div className="w-full max-w-xl relative group">
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">

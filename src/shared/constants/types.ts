@@ -41,6 +41,11 @@ export interface Blog {
   comments?: Comment[];
 }
 
+export interface Category {
+  id: string;
+  name: string;
+}
+
 export interface EditBlogForm {
   title: string;
   content: string;

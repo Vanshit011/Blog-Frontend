@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogByID, getComments } from '../../services/api';
-import { User as UserIcon, Calendar, Share2, Clock, Lock } from 'lucide-react';
+import { User as UserIcon, Calendar, Share2, Clock } from 'lucide-react';
 import type { Blog, Comment } from '../../shared/constants/types';
 import { calculateReadTime, stripHtml } from '../../shared/utils';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import Navbar from '../../common/Navbar';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import CommentsSection from '../../components/blog/CommentsSection';
 import LikeSection from '../../components/blog/LikeSection';
@@ -72,7 +71,7 @@ const BlogDetails = () => {
     };
 
     fetchAll();
-  }, [id, isAuthenticated]);
+  }, [id]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -107,7 +106,10 @@ const BlogDetails = () => {
                   </div>
 
                   {blog.author && (
-                    <div className="flex items-center">
+                    <div
+                      className="flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
+                      onClick={() => navigate(`/author/${blog.author.id}`)}
+                    >
                       <UserIcon className="w-4 h-4 mr-2" />
                       {blog.author.first_name} {blog.author.last_name}
                     </div>
@@ -120,19 +122,14 @@ const BlogDetails = () => {
                 </div>
               </header>
 
-              {isAuthenticated ? (
+              {/* {isAuthenticated ? (
                 <div
                   className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: blog.content }}
                 />
               ) : (
                 <div className="relative">
-                  <div
-                    className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed overflow-hidden max-h-[200px] mb-110 blur-[1px] opacity-20 select-none pointer-events-none"
-                    dangerouslySetInnerHTML={{
-                      __html: stripHtml(blog.content).substring(0, 300) + '...',
-                    }}
-                  />
+                 
                   <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent flex flex-col items-center justify-end pb-1 mt-110">
                     <div className="bg-white rounded-[2rem] p-10 text-center border border-gray-100 shadow-2xl shadow-indigo-100/50 max-w-lg w-full relative group/cta">
                       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
@@ -169,7 +166,13 @@ const BlogDetails = () => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
+              <div
+                className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed overflow-hidden max-h-[200px] mb-50 select-none pointer-events-none"
+                dangerouslySetInnerHTML={{
+                  __html: stripHtml(blog.content).substring(0, 300) + '...',
+                }}
+              />
             </article>
             <div className="mt-10 pt-6 border-t border-gray-100 flex items-center gap-4">
               <LikeSection
