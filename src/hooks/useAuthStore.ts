@@ -7,6 +7,7 @@ interface User {
   first_name: string;
   last_name: string;
   role: 'admin' | 'user';
+  profile_picture?: string;
 }
 
 interface AuthState {
@@ -17,11 +18,13 @@ interface AuthState {
   initialized: boolean;
   login: (token: string) => void;
   logout: () => void;
+  setUser: (user: User) => void;
+  updateUser: (data: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: localStorage.getItem('access_token'),
-  user: null, 
+  user: null,
   userRole: localStorage.getItem('user_role') as 'admin' | 'user' | null,
   isAuthenticated: !!localStorage.getItem('access_token'),
   initialized: false,
@@ -50,6 +53,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       initialized: true,
     });
   },
+
+  setUser: (user: User) => set({ user }),
+
+  updateUser: (data: Partial<User>) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...data } : (data as User),
+    })),
 }));
 
 // Initialize store from localStorage immediately

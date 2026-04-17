@@ -95,6 +95,13 @@ export const getAllBlogs = (page: number, limit: number, search: string) => {
 };
 
 // User Profile & Author Blogs
+
+export const uploadProfileImage = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return API.post('/user/upload', formData);
+};
+
 export const getMyProfile = () => {
   return API.get('/user/profile');
 };

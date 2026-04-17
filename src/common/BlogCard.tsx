@@ -58,8 +58,8 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
 
           <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
             {blog.author && (
-              <Link 
-                to={`/author/${blog.author.username || blog.author.id}`}
+              <Link
+                to={`/author/${blog.author.user_name || blog.author.id}`}
                 className="flex items-center hover:opacity-80 transition-opacity"
                 onClick={(e) => e.stopPropagation()}
               >
