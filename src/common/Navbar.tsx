@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
   const { onOpen } = useProfileStore();
   const { onOpen: onOpenFollowing } = useFollowingStore();
   const { onOpen: onOpenLogout } = useLogoutStore();
-  const { isAuthenticated: isLoggedIn, userRole } = useAuthStore();
+  const { isAuthenticated: isLoggedIn, userRole, user } = useAuthStore();
   const isAdmin = userRole === 'admin';
 
   const handleLogoClick = () => {
@@ -87,10 +87,20 @@ const Navbar: React.FC<NavbarProps> = ({ showBack }) => {
                 </button>
                 <button
                   onClick={onOpen}
-                  className="flex items-center px-4 py-3 rounded-2xl text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group"
+                  className="flex items-center px-1.5 py-1.5 rounded-2xl text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 group"
                 >
-                  <UserCircle className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  <span className="font-semibold">Profile</span>
+                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-indigo-50 flex items-center justify-center mr-2 border-2 border-transparent group-hover:border-indigo-100 transition-all">
+                    {user?.profile_picture ? (
+                      <img 
+                        src={user.profile_picture} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    ) : (
+                      <UserCircle className="w-6 h-6 text-indigo-400 group-hover:scale-110 transition-transform" />
+                    )}
+                  </div>
+                  <span className="font-semibold pr-2">Profile</span>
                 </button>
                 <button
                   onClick={handleLogout}

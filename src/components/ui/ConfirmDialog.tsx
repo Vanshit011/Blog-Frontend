@@ -31,7 +31,9 @@ const ConfirmDialog = ({
         <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] animate-in fade-in duration-300" />
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl z-[101] border border-gray-100 animate-in zoom-in-95 duration-300 outline-none p-8 overflow-hidden">
           <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-2xl ${variant === 'destructive' ? 'bg-red-50 text-red-600' : 'bg-indigo-50 text-indigo-600'}`}>
+            <div
+              className={`p-3 rounded-2xl ${variant === 'destructive' ? 'bg-red-50 text-red-600' : 'bg-indigo-50 text-indigo-600'}`}
+            >
               <AlertCircle className="w-6 h-6" />
             </div>
             <div className="flex-1">

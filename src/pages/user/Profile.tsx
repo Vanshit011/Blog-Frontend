@@ -11,7 +11,7 @@ interface ProfileFormData {
   first_name: string;
   last_name: string;
   display_name: string;
-  username: string;
+  user_name: string;
   about: string;
 }
 
@@ -36,7 +36,7 @@ const Profile = () => {
         first_name: userData.first_name || '',
         last_name: userData.last_name || '',
         display_name: userData.display_name || '',
-        username: userData.username || '',
+        user_name: userData.user_name || '',
         about: userData.about || '',
       });
     } catch (error: unknown) {
@@ -119,8 +119,8 @@ const Profile = () => {
 
                 <FormInput
                   label="Username"
-                  id="username"
-                  {...register('username', {
+                  id="user_name"
+                  {...register('user_name', {
                     required: 'Username is required',
                     pattern: {
                       value: /^[a-zA-Z0-9_]+$/,
@@ -128,7 +128,7 @@ const Profile = () => {
                         'Username can only contain letters, numbers, and underscores',
                     },
                   })}
-                  error={errors.username?.message}
+                  error={errors.user_name?.message}
                   placeholder="johndoe"
                   className="space-y-2"
                 />

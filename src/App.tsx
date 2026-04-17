@@ -19,9 +19,11 @@ import FollowingModal from './components/modals/FollowingModal';
 import LogoutModal from './components/modals/LogoutModal';
 import ProtectedRoute from './route/ProtectedRoute';
 import { Toaster } from 'sonner';
+import { useInitAuth } from './hooks/useInitAuth';
 import './App.css';
 
 function App() {
+  useInitAuth();
   return (
     <>
       <Router>

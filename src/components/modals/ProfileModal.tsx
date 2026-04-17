@@ -1,18 +1,19 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { getMyProfile, updateProfile } from '../../services/api';
-import { UserCircle, Save, X } from 'lucide-react';
+import { UserCircle, Save, X, Camera, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import FormInput from '../../common/FormInput';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { useProfileStore } from '../../hooks/useProfileStore';
+import { useAuthStore } from '../../hooks/useAuthStore';
 import * as Dialog from '@radix-ui/react-dialog';
+import { uploadProfileImage, getMyProfile, updateProfile } from '../../services/api';
 
 interface ProfileFormData {
   first_name: string;
   last_name: string;
   display_name: string;
-  username: string;
+  user_name: string;
   about: string;
 }
 
@@ -20,7 +21,9 @@ const ProfileModal = () => {
   const { isOpen, onClose } = useProfileStore();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [userId, setUserId] = useState<string>('');
+  const { user, setUser, updateUser } = useAuthStore();
 
   const {
     register,
@@ -35,11 +38,13 @@ const ProfileModal = () => {
       const response = await getMyProfile();
       const userData = response.data;
       setUserId(userData.id);
+      // Update global auth store with fresh profile data
+      setUser(userData);
       reset({
         first_name: userData.first_name || '',
         last_name: userData.last_name || '',
         display_name: userData.display_name || '',
-        username: userData.username || '',
+        user_name: userData.user_name || '',
         about: userData.about || '',
       });
     } catch (error: unknown) {
@@ -48,7 +53,7 @@ const ProfileModal = () => {
     } finally {
       setLoading(false);
     }
-  }, [reset]);
+  }, [reset, setUser]);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +64,9 @@ const ProfileModal = () => {
   const onSubmit = async (data: ProfileFormData) => {
     setUpdating(true);
     try {
-      await updateProfile(userId, data);
+      const response = await updateProfile(userId, data);
+      // Update global store with the updated data
+      updateUser(response.data);
       toast.success('Profile updated successfully');
       onClose();
     } catch (error: unknown) {
@@ -67,6 +74,38 @@ const ProfileModal = () => {
       toast.error(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Basic validation
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const response = await uploadProfileImage(file);
+      const imageUrl = response.data.url || response.data.profile_picture;
+      
+      // Update the user state globally
+      updateUser({ profile_picture: imageUrl });
+      
+      toast.success('Profile picture updated!');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -80,9 +119,35 @@ const ProfileModal = () => {
             <Dialog.Close className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl transition-colors backdrop-blur-md outline-none">
               <X className="w-5 h-5" />
             </Dialog.Close>
-            <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-2xl shadow-lg">
-              <div className="w-24 h-24 bg-indigo-50 rounded-xl flex items-center justify-center border-4 border-white">
-                <UserCircle className="w-16 h-16 text-indigo-400" />
+            <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-2xl shadow-lg group/avatar">
+              <div className="relative w-24 h-24 bg-indigo-50 rounded-xl overflow-hidden border-4 border-white">
+                {user?.profile_picture ? (
+                  <img
+                    src={user.profile_picture}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <UserCircle className="w-16 h-16 text-indigo-400" />
+                  </div>
+                )}
+                
+                {/* Upload Overlay */}
+                <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer">
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                  />
+                  {uploadingImage ? (
+                    <Loader2 className="w-8 h-8 text-white animate-spin" />
+                  ) : (
+                    <Camera className="w-8 h-8 text-white" />
+                  )}
+                </label>
               </div>
             </div>
           </div>
@@ -126,15 +191,15 @@ const ProfileModal = () => {
 
                   <FormInput
                     label="Username"
-                    id="username"
-                    {...register('username', {
+                    id="user_name"
+                    {...register('user_name', {
                       required: 'Username is required',
                       pattern: {
                         value: /^[a-zA-Z0-9_]+$/,
                         message: 'Letters, numbers, and underscores only',
                       },
                     })}
-                    error={errors.username?.message}
+                    error={errors.user_name?.message}
                     placeholder="johndoe"
                   />
 

@@ -31,7 +31,7 @@ interface AuthorData {
   first_name: string;
   last_name: string;
   display_name: string;
-  username: string;
+  user_name: string;
   about: string;
   created_at: string;
 }
@@ -167,7 +167,7 @@ const AuthorProfile = () => {
                     `${author.first_name} ${author.last_name}`}
                 </h1>
                 <p className="text-indigo-600 font-bold tracking-wide flex items-center justify-center md:justify-start gap-2">
-                  @{author.username}
+                  @{author.user_name}
                 </p>
               </div>
 

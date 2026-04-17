@@ -6,9 +6,10 @@ export interface Author {
   id: string;
   first_name: string;
   last_name: string;
-  username?: string;
+  user_name?: string;
   about?: string;
   display_name?: string;
+  profile_picture?: string;
 }
 export interface Comment {
   display_name: string;
