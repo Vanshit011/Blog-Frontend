@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getBlogByID, getComments } from '../../services/api';
+import {
+  getBlogByID,
+  getComments,
+  getRecommendedBlogs,
+} from '../../services/api';
 import { User as UserIcon, Calendar, Share2, Clock } from 'lucide-react';
 import type { Blog, Comment } from '../../shared/constants/types';
 import { calculateReadTime, stripHtml } from '../../shared/utils';
@@ -11,12 +15,14 @@ import CommentsSection from '../../components/blog/CommentsSection';
 import LikeSection from '../../components/blog/LikeSection';
 
 import { useAuthStore } from '../../hooks/useAuthStore';
+import BlogCard from '../../common/BlogCard';
 
 const BlogDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [recommendedBlogs, setRecommendedBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [comments, setComments] = useState<Comment[]>([]);
@@ -45,6 +51,29 @@ const BlogDetails = () => {
     navigate('/login');
   };
 
+  const extractCategoryId = (blogData: Blog): string | undefined => {
+    if (blogData.categoryId) return blogData.categoryId;
+    if (blogData.category?.id) return blogData.category.id;
+
+    const rawBlog = blogData as Blog & {
+      category_id?: string;
+      category?: { id?: string };
+    };
+
+    return rawBlog.category_id || rawBlog.category?.id;
+  };
+
+  const normalizeRecommendedBlogs = (payload: unknown): Blog[] => {
+    if (Array.isArray(payload)) return payload as Blog[];
+
+    if (payload && typeof payload === 'object') {
+      const record = payload as { data?: unknown };
+      if (Array.isArray(record.data)) return record.data as Blog[];
+    }
+
+    return [];
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -52,7 +81,21 @@ const BlogDetails = () => {
       setLoading(true);
       try {
         const blogRes = await getBlogByID(id);
-        setBlog(blogRes.data);
+        const blogData = blogRes.data as Blog;
+        setBlog(blogData);
+
+        try {
+          const recommendedRes = await getRecommendedBlogs(
+            extractCategoryId(blogData)
+          );
+          const blogs = normalizeRecommendedBlogs(recommendedRes.data).filter(
+            (recommendedBlog) => recommendedBlog.id !== id
+          );
+          setRecommendedBlogs(blogs);
+        } catch (err) {
+          console.error('Error fetching recommended blogs:', err);
+          setRecommendedBlogs([]);
+        }
 
         if (isAuthenticated) {
           try {
@@ -65,13 +108,14 @@ const BlogDetails = () => {
         }
       } catch (error) {
         console.error('Error fetching blog:', error);
+        setRecommendedBlogs([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAll();
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -108,7 +152,7 @@ const BlogDetails = () => {
                   {blog.author && (
                     <div
                       className="flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
-                      onClick={() => navigate(`/author/${blog.author.id}`)}
+                      onClick={() => navigate(`/author/${blog.author?.id}`)}
                     >
                       <UserIcon className="w-4 h-4 mr-2" />
                       {blog.author.first_name} {blog.author.last_name}
@@ -191,6 +235,25 @@ const BlogDetails = () => {
               isAuthenticated={isAuthenticated}
               onAuthRequired={handleAuthRequired}
             />
+
+            {recommendedBlogs.length > 0 && (
+              <section className="mt-16 border-t border-gray-100 pt-12">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Recommended Blogs
+                  </h2>
+                  <p className="mt-2 text-gray-500">
+                    Related articles you may want to read next.
+                  </p>
+                </div>
+
+                <div className="grid gap-8 md:grid-cols-2">
+                  {recommendedBlogs.slice(0, 4).map((recommendedBlog) => (
+                    <BlogCard key={recommendedBlog.id} blog={recommendedBlog} />
+                  ))}
+                </div>
+              </section>
+            )}
           </>
         )}
       </main>

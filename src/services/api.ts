@@ -99,6 +99,12 @@ export const getAllBlogs = (
   });
 };
 
+export const getRecommendedBlogs = (categoryId?: string) => {
+  return API.get('/blog/recommend', {
+    params: categoryId ? { categoryId } : undefined,
+  });
+};
+
 //category
 export const createCategory = (name: string) => {
   return API.post('/category', { name });

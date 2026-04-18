@@ -3,6 +3,14 @@ import { getLikes, likeBlog, unlikeBlog } from '../../services/api';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 interface LikeSectionProps {
   blogId: string;
   userId?: string | null;
@@ -64,7 +72,11 @@ const LikeSection = ({
       setIsLiked(wasLiked);
       setLikes((prev) => (wasLiked ? prev + 1 : prev - 1));
 
-      if (err?.response?.data?.message !== 'You already liked this blog') {
+      const error = err as ApiError;
+
+      if (
+        error.response?.data?.message !== 'You already liked this blog'
+      ) {
         toast.error('Like failed');
         setIsLiked(true);
       }
