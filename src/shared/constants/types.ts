@@ -39,6 +39,8 @@ export interface Blog {
   commentCount?: number;
   isLiked?: boolean;
   comments?: Comment[];
+  categoryId?: string;
+  category?: Category;
 }
 
 export interface Category {
