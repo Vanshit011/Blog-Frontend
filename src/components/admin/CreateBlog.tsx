@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createBlogPost } from '../../services/api';
 import { AxiosError } from 'axios';
@@ -11,7 +11,7 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
 import type { ErrorResponse } from '../../shared/constants/types';
-import { generateContent } from '../../services/api';
+import { generateContent, getCategories } from '../../services/api';
 import { Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -21,13 +21,33 @@ const CreateBlog = () => {
     content: '',
     slug: '',
     coverImage: '',
-    status: '',
+    categoryId: '',
+    status: 'draft',
   });
   const [loading, setLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategories();
+
+        console.log('Categories API:', res.data);
+
+        setCategories(res.data);
+      } catch (err) {
+        console.error('Error fetching categories', err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const editor = useEditor({
     extensions: [
@@ -114,6 +134,7 @@ const CreateBlog = () => {
         formData.content,
         formData.slug,
         formData.coverImage,
+        formData.categoryId,
         formData.status
       );
       toast.success('Blog post published successfully!');
@@ -325,6 +346,7 @@ const CreateBlog = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, coverImage: e.target.value })
                     }
+                    
                   />
                   <div className="flex items-center gap-2">
                     <label className="text-sm font-medium text-gray-700">
@@ -333,13 +355,35 @@ const CreateBlog = () => {
                     <select
                       name="status"
                       className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                      value={formData.status}
+                      value={formData.status || 'draft'}
                       onChange={(e) =>
                         setFormData({ ...formData, status: e.target.value })
                       }
                     >
                       <option value="draft">Draft</option>
                       <option value="published">Published</option>
+                    </select>
+
+                    <div className="w-[1px] bg-gray-300 mx-2" />
+
+                    <label className="text-sm font-medium text-gray-700">
+                      Category
+                    </label>
+                    <select
+                      name="categoryId"
+                      className="w-full border p-2.5 rounded-lg"
+                      value={formData.categoryId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, categoryId: e.target.value })
+                      }
+                    >
+                      <option value="">Select Category</option>
+
+                      {categories.map((cat: { id: string; name: string }) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   {formData.coverImage && (

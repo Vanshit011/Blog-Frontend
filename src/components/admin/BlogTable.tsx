@@ -1,7 +1,7 @@
-import { 
-  Edit2, 
-  Trash2, 
-  Share2, 
+import {
+  Edit2,
+  Trash2,
+  Share2,
   MoreVertical,
   ExternalLink,
 } from 'lucide-react';
@@ -45,20 +45,36 @@ const BlogTable = ({ blogs, onDelete, onEdit }: BlogTableProps) => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Image</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Details</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Metrics</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Image
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Details
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Metrics
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {blogs.map((blog) => (
-              <tr key={blog.id} className="group hover:bg-gray-50/80 transition-all duration-200">
+              <tr
+                key={blog.id}
+                className="group hover:bg-gray-50/80 transition-all duration-200"
+              >
                 <td className="px-6 py-5 whitespace-nowrap">
                   <div className="relative w-24 h-16 rounded-2xl overflow-hidden shadow-inner bg-gray-100 border border-gray-100">
                     <img
-                      src={blog.coverImage || 'https://placehold.co/400x300?text=No+Image'}
+                      src={
+                        blog.cover_image ||
+                        'https://placehold.co/400x300?text=No+Image'
+                      }
                       alt={blog.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
@@ -80,23 +96,30 @@ const BlogTable = ({ blogs, onDelete, onEdit }: BlogTableProps) => {
                       {calculateReadTime(blog.content)}
                     </span>
                     <span className="text-[10px] font-bold text-gray-400">
-                      {blog.created_at ? new Date(blog.created_at).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      }) : 'N/A'}
+                      {blog.created_at
+                        ? new Date(blog.created_at).toLocaleDateString(
+                            undefined,
+                            {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            }
+                          )
+                        : 'N/A'}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-5 whitespace-nowrap">
                   <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                      blog.status === 'PUBLISHED' 
-                        ? 'bg-green-50 text-green-600' 
+                      blog.status === 'PUBLISHED'
+                        ? 'bg-green-50 text-green-600'
                         : 'bg-amber-50 text-amber-600'
                     }`}
                   >
-                    <span className={`w-1.5 h-1.5 rounded-full mr-2 ${blog.status === 'PUBLISHED' ? 'bg-green-500' : 'bg-amber-500'}`} />
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full mr-2 ${blog.status === 'PUBLISHED' ? 'bg-green-500' : 'bg-amber-500'}`}
+                    />
                     {blog.status}
                   </span>
                 </td>
@@ -121,7 +144,7 @@ const BlogTable = ({ blogs, onDelete, onEdit }: BlogTableProps) => {
                           <Edit2 size={16} />
                           Edit Post
                         </DropdownMenu.Item>
-                        
+
                         {blog.status === 'PUBLISHED' && (
                           <DropdownMenu.Item
                             onClick={() => copyShareLink(blog.id)}
@@ -133,7 +156,9 @@ const BlogTable = ({ blogs, onDelete, onEdit }: BlogTableProps) => {
                         )}
 
                         <DropdownMenu.Item
-                          onClick={() => window.open(`/blog/${blog.id}`, '_blank')}
+                          onClick={() =>
+                            window.open(`/blog/${blog.id}`, '_blank')
+                          }
                           className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl cursor-pointer outline-none transition-all"
                         >
                           <ExternalLink size={16} />

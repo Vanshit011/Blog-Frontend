@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Bell } from 'lucide-react';
-import { getMyNotifications } from '../../services/api';
+import { getMyNotifications, markNotificationAsRead } from '../../services/api';
 import type { Notification } from '../../shared/constants/types';
 import NotificationDropdown from './NotificationDropdown';
+import { toast } from 'sonner';
 
 const NotificationBell: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -14,7 +15,7 @@ const NotificationBell: React.FC = () => {
       const response = await getMyNotifications();
       const allNotifs = response.data;
       setNotifications(allNotifs);
-      setUnreadCount(allNotifs.filter((n: Notification) => !n.isRead).length);
+      setUnreadCount(allNotifs.filter((n: Notification) => !n.is_read).length);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     }
@@ -32,6 +33,22 @@ const NotificationBell: React.FC = () => {
       clearInterval(interval);
     };
   }, [fetchNotifications]);
+
+  const handleMarkAsRead = async (id: string) => {
+    // Optimistic update
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+    );
+    setUnreadCount((prev) => Math.max(0, prev - 1));
+
+    try {
+      await markNotificationAsRead(id);
+    } catch {
+      toast.error('Failed to mark notification as read');
+      // Revert if failed
+      fetchNotifications();
+    }
+  };
 
   return (
     <div className="relative">
@@ -55,7 +72,7 @@ const NotificationBell: React.FC = () => {
 
       <NotificationDropdown
         notifications={notifications}
-        onRefresh={fetchNotifications}
+        onMarkAsRead={handleMarkAsRead}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />

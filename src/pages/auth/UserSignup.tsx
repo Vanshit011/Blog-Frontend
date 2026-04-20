@@ -38,8 +38,8 @@ const UserSignup = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#f8fafc]">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl border border-gray-100">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-emerald-50 rounded-full">
-            <UserPlus className="w-8 h-8 text-emerald-600" />
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-indigo-50 rounded-full">
+            <UserPlus className="w-8 h-8 text-indigo-600" />
           </div>
           <h2 className="text-3xl font-extrabold text-gray-900">
             Create Account
@@ -56,7 +56,7 @@ const UserSignup = () => {
                 label="First Name"
                 id="firstName"
                 type="text"
-                ringClassName="focus:ring-emerald-500"
+                ringClassName="focus:ring-indigo-500"
                 {...register('firstName', {
                   required: 'First Name is required',
                 })}
@@ -66,7 +66,7 @@ const UserSignup = () => {
                 label="Last Name"
                 id="lastName"
                 type="text"
-                ringClassName="focus:ring-emerald-500"
+                ringClassName="focus:ring-indigo-500"
                 {...register('lastName', {
                   required: 'Last Name is required',
                 })}
@@ -77,7 +77,7 @@ const UserSignup = () => {
               label="Email Address"
               id="email"
               type="email"
-              ringClassName="focus:ring-emerald-500"
+              ringClassName="focus:ring-indigo-500"
               {...register('email', { required: 'Email is required' })}
               error={errors.email?.message as string}
             />
@@ -85,7 +85,7 @@ const UserSignup = () => {
               label="Password"
               id="password"
               type="password"
-              ringClassName="focus:ring-emerald-500"
+              ringClassName="focus:ring-indigo-500"
               {...register('password', { required: 'Password is required' })}
               error={errors.password?.message as string}
             />
@@ -93,7 +93,7 @@ const UserSignup = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-3 text-sm font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors shadow-lg shadow-emerald-200"
+            className="w-full px-4 py-3 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-lg shadow-indigo-200"
           >
             Create Account
           </button>
@@ -124,7 +124,7 @@ const UserSignup = () => {
           Already have an account?{' '}
           <a
             href="/login"
-            className="font-semibold text-emerald-600 hover:text-emerald-500"
+            className="font-semibold text-indigo-600 hover:text-indigo-500"
           >
             Log in
           </a>

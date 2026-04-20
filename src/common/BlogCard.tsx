@@ -17,9 +17,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
       <Link to={`/blog/${blog.id}`} className="flex flex-col h-full">
         <div className="relative h-56 overflow-hidden bg-gray-50">
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          {blog.coverImage ? (
+          {blog.cover_image ? (
             <img
-              src={blog.coverImage}
+              src={blog.cover_image}
               alt={blog.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
@@ -63,8 +63,18 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
                 className="flex items-center hover:opacity-80 transition-opacity"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center mr-3 border border-indigo-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all duration-300">
-                  <User className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors duration-300" />
+                <div>
+                  {blog.author.profile_picture ? (
+                    <img
+                      src={blog.author.profile_picture}
+                      alt={blog.author.first_name}
+                      className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center mr-3 border border-indigo-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all duration-300"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center mr-3 border border-indigo-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all duration-300">
+                      <User className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors duration-300" />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-900 leading-none mb-1">

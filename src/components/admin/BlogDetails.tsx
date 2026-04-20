@@ -58,7 +58,7 @@ const BlogDetail = () => {
               </button>
             </div>
             <p className="text-gray-500 mb-6">Slug: {blog.slug}</p>
-            <div 
+            <div
               className="prose max-w-none prose-indigo"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
