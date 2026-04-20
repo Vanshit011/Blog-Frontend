@@ -26,7 +26,9 @@ const PublicBlogView = () => {
       }
     };
     fetchCategories();
+  }, []);
 
+  useEffect(() => {
     const fetchBlogs = async () => {
       setLoading(true);
       try {
@@ -49,7 +51,7 @@ const PublicBlogView = () => {
 
     const timer = setTimeout(() => {
       fetchBlogs();
-    }, 300); // Add a small debounce for search
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [page, limit, search, selectedCategoryId]);
