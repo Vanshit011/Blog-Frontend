@@ -32,14 +32,14 @@ export const userLogin = (email: string, password: string) => {
 export const userSignup = (
   email: string,
   password: string,
-  first_name: string,
-  last_name: string
+  firstName: string,
+  lastName: string
 ) => {
   return API.post('/auth/user/signup', {
     email,
     password,
-    first_name,
-    last_name,
+    firstName,
+    lastName,
   });
 };
 
@@ -53,9 +53,17 @@ export const createBlogPost = (
   content: string,
   slug: string,
   coverImage?: string,
+  categoryId?: string,
   status?: string
 ) => {
-  return API.post('/blog/create', { title, content, slug, coverImage, status });
+  return API.post('/blog/create', {
+    title,
+    content,
+    slug,
+    cover_image: coverImage,
+    category_id: categoryId,
+    status,
+  });
 };
 
 export const generateContent = (title: string, keywords?: string) => {
@@ -80,7 +88,13 @@ export const updateBlog = (
   coverImage?: string,
   status?: string
 ) => {
-  return API.patch(`/blog/${id}`, { title, content, slug, coverImage, status });
+  return API.patch(`/blog/${id}`, {
+    title,
+    content,
+    slug,
+    cover_image: coverImage,
+    status,
+  });
 };
 
 export const deleteBlog = (id: string) => {

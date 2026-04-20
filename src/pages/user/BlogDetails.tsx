@@ -7,7 +7,7 @@ import {
 } from '../../services/api';
 import { User as UserIcon, Calendar, Share2, Clock } from 'lucide-react';
 import type { Blog, Comment } from '../../shared/constants/types';
-import { calculateReadTime, stripHtml } from '../../shared/utils';
+import { calculateReadTime } from '../../shared/utils';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import Navbar from '../../common/Navbar';
 import { toast } from 'sonner';
@@ -166,9 +166,9 @@ const BlogDetails = () => {
                 </div>
               </header>
               <div
-                className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed overflow-hidden max-h-[200px] mb-50 select-none pointer-events-none"
+                className="prose prose-indigo max-w-none prose-lg text-gray-700 leading-relaxed mb-10"
                 dangerouslySetInnerHTML={{
-                  __html: stripHtml(blog.content).substring(0, 300) + '...',
+                  __html: blog.content,
                 }}
               />
             </article>

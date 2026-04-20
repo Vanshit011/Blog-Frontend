@@ -27,6 +27,7 @@ export interface Like {
 }
 
 export interface Blog {
+  cover_image: string;
   id: string;
   title: string;
   slug: string;
@@ -61,7 +62,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  isRead: boolean;
+  is_read: boolean;
   created_at: string;
 }
 export interface FollowStats {

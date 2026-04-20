@@ -1,32 +1,21 @@
 import React from 'react';
 import { Check, BellOff, X } from 'lucide-react';
 import type { Notification } from '../../shared/constants/types';
-import { markNotificationAsRead } from '../../services/api';
-import { toast } from 'sonner';
 
 interface NotificationDropdownProps {
   notifications: Notification[];
-  onRefresh: () => void;
+  onMarkAsRead: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
 }
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   notifications,
-  onRefresh,
+  onMarkAsRead,
   isOpen,
   onClose,
 }) => {
   if (!isOpen) return null;
-
-  const handleMarkAsRead = async (id: string) => {
-    try {
-      await markNotificationAsRead(id);
-      onRefresh();
-    } catch {
-      toast.error('Failed to mark notification as read');
-    }
-  };
 
   return (
     <>
@@ -48,22 +37,22 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
               {notifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`p-5 hover:bg-indigo-50/50 transition-all group relative ${!notif.isRead ? 'bg-indigo-50/20' : ''}`}
+                  className={`p-5 hover:bg-indigo-50/50 transition-all group relative ${!notif.is_read ? 'bg-indigo-50/20' : ''}`}
                 >
                   <div className="flex gap-4">
                     <div
-                      className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notif.isRead ? 'bg-indigo-600' : 'bg-transparent'}`}
+                      className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!notif.is_read ? 'bg-indigo-600' : 'bg-transparent'}`}
                     />
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between items-start">
                         <p
-                          className={`text-sm font-bold ${!notif.isRead ? 'text-gray-900' : 'text-gray-600'}`}
+                          className={`text-sm font-bold ${!notif.is_read ? 'text-gray-900' : 'text-gray-600'}`}
                         >
                           {notif.title}
                         </p>
-                        {!notif.isRead && (
+                        {!notif.is_read && (
                           <button
-                            onClick={() => handleMarkAsRead(notif.id)}
+                            onClick={() => onMarkAsRead(notif.id)}
                             className="bg-white p-1.5 rounded-lg border border-gray-100 opacity-0 group-hover:opacity-100 transition-all hover:bg-indigo-600 hover:text-white"
                             title="Mark as read"
                           >

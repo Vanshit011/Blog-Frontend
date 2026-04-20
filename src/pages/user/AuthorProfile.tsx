@@ -27,6 +27,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useAuthStore } from '../../hooks/useAuthStore';
 
 interface AuthorData {
+  profile_picture: string;
   id: string;
   first_name: string;
   last_name: string;
@@ -77,7 +78,22 @@ const AuthorProfile = () => {
       setBlogs(blogsRes.data.data);
 
       const statsRes = await getFollowStats(authorData.id);
-      setStats(statsRes.data);
+      let isFollowing = statsRes.data.isFollowing;
+
+      if (isAuthenticated && !isFollowing) {
+        try {
+          const { getMyFollowing } = await import('../../services/api');
+          const followingRes = await getMyFollowing();
+          const followingList = followingRes.data.following || [];
+          isFollowing = followingList.some(
+            (f: { id: string }) => f.id === authorData.id
+          );
+        } catch (e) {
+          console.error('Failed to verify following status', e);
+        }
+      }
+
+      setStats({ ...statsRes.data, isFollowing });
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(
@@ -86,7 +102,7 @@ const AuthorProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [identifier]);
+  }, [identifier, isAuthenticated]);
 
   useEffect(() => {
     fetchAuthorData();
@@ -156,7 +172,15 @@ const AuthorProfile = () => {
           <div className="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left">
             <div className="relative">
               <div className="w-32 h-32 md:w-40 md:h-40 bg-indigo-50 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl shadow-indigo-100">
-                <UserCircle className="w-20 h-20 md:w-24 md:h-24 text-indigo-400" />
+                {author.profile_picture ? (
+                  <img
+                    src={author.profile_picture}
+                    alt={author.display_name}
+                    className="w-20 h-20 md:w-24 md:h-24 text-indigo-400 rounded-full"
+                  />
+                ) : (
+                  <UserCircle className="w-20 h-20 md:w-24 md:h-24 text-indigo-400 rounded-full" />
+                )}
               </div>
             </div>
 
@@ -178,10 +202,7 @@ const AuthorProfile = () => {
               )}
 
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm font-semibold text-gray-500">
-                <div
-                  onClick={() => setIsFollowersModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-indigo-100 hover:bg-indigo-50/30 transition-all group/stat"
-                >
+                <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-indigo-100 hover:bg-indigo-50/30 transition-all group/stat">
                   <Users className="w-5 h-5 text-indigo-500 group-hover/stat:scale-110 transition-transform" />
                   <span className="text-gray-900 font-bold">
                     {stats.followersCount}
